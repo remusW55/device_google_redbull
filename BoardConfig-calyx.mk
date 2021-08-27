@@ -23,11 +23,19 @@ TARGET_KERNEL_ADDITIONAL_FLAGS := DTC_EXT=$(shell pwd)/prebuilts/misc/linux-x86/
 TARGET_KERNEL_ARCH := arm64
 TARGET_KERNEL_CLANG_COMPILE := true
 TARGET_KERNEL_CONFIG := redbull_defconfig
+ifeq ($(TARGET_BOOTLOADER_BOARD_NAME),barbet)
+TARGET_KERNEL_SOURCE := kernel/google/barbet
+else
 TARGET_KERNEL_SOURCE := kernel/google/redbull
+endif
 TARGET_NEEDS_DTBOIMAGE := true
 
 # Kernel modules
+ifeq ($(TARGET_BOOTLOADER_BOARD_NAME),barbet)
+KERNEL_MODULES_LOAD_RAW := $(strip $(shell cat device/google/barbet/modules.load))
+else
 KERNEL_MODULES_LOAD_RAW := $(strip $(shell cat device/google/redbull/modules.load))
+endif
 KERNEL_MODULES_LOAD := $(foreach m,$(KERNEL_MODULES_LOAD_RAW),$(notdir $(m)))
 BOARD_VENDOR_KERNEL_MODULES_LOAD := $(filter-out $(BOOT_KERNEL_MODULES), $(KERNEL_MODULES_LOAD))
 BOARD_VENDOR_RAMDISK_KERNEL_MODULES_LOAD := $(filter $(BOOT_KERNEL_MODULES), $(KERNEL_MODULES_LOAD))

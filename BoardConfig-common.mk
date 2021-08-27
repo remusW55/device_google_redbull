@@ -478,11 +478,19 @@ TARGET_BOARD_INFO_FILE := $(TARGET_BOARD_NAME_DIR)/board-info.txt
 TARGET_BOARD_COMMON_PATH := $(TARGET_BOARD_NAME_DIR)/sm7250
 
 # Common kernel file handling
+ifeq ($(TARGET_BOOTLOADER_BOARD_NAME),barbet)
+TARGET_KERNEL_DIR := device/google/barbet-kernel
+else
 TARGET_KERNEL_DIR := device/google/redbull-kernel
+endif
 
 # DTBO partition definitions
 ifneq ($(INLINE_KERNEL_BUILDING),true)
+ifeq ($(TARGET_BOOTLOADER_BOARD_NAME),barbet)
+BOARD_PREBUILT_DTBOIMAGE := $(TARGET_KERNEL_DIR)/dtbo.img
+else
 BOARD_PREBUILT_DTBOIMAGE := $(TARGET_KERNEL_DIR)/dtbo_$(TARGET_BOOTLOADER_BOARD_NAME).img
+endif
 endif
 TARGET_FS_CONFIG_GEN := $(TARGET_BOARD_NAME_DIR)/config.fs
 
